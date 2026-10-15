@@ -2,7 +2,7 @@
 
 面向通用 STM32 MCU 开发的 Agent Skills 技能包。主要通过 `cube` 使用 STM32Cube 工具，结合工程已有的生成器、构建系统和原生工具，完成工程创建、固件开发及板端诊断。
 
-第一版 `0.1.0`，中文为主，采用 MIT 许可。支持标准技能目录使用和 Codex 插件安装，两种方式共用同一份技能内容。
+第一版 `0.1.0`，中文为主，采用 MIT 许可。支持标准技能目录和 Codex 插件两种安装形式，均安装完整七技能包。
 
 ## 能力
 
@@ -17,6 +17,10 @@
 | [stm32-debug](skills/stm32-debug/SKILL.md) | 获取运行证据，定位启动、异常、外设与 FreeRTOS 问题。 |
 
 技能按任务组合。工具可用时不必重复准备环境；纯应用改动可以直接开发和构建；运行问题则从证据获取和诊断开始。
+
+包内技能可以相互引用。工具定位与依赖集中在 `stm32-env`，工程识别集中在 `stm32-project`，配置保存、重载及生成集中在 `stm32-configure`，构建方法集中在 `stm32-build`。其他技能按当前任务读取这些资料，完成子步骤后继续原任务，无需每次加载全部技能。
+
+文件链接相对其所在文档解析，实际工具命令在用户工程目录运行。标准目录安装须保留七个技能的名称及同级关系；插件安装由完整插件携带这些目录。
 
 ## 工程范围
 
@@ -36,34 +40,52 @@
 
 插件安装本身只提供指导，不自动安装工具链、下载 MCU 软件包或修改工程配置。
 
+不知道工具装在哪里时，可从[三平台工具定位](skills/stm32-env/references/tool-location.md)开始；传统 CubeMX 的查找、Java 选择和最小查询见[脚本入口](skills/stm32-env/references/cubemx-runtime.md)。
+
 ## 安装方式一：标准技能目录
 
-每个 `skills/<技能名>` 目录是可单独使用的技能，复制时保留其 `references`、`agents` 和许可证。其他兼容客户端按自身技能发现规则导入这些目录。
+将 `skills/` 中全部七个 `stm32-*` 目录复制到客户端的同一个技能发现目录，保留 `references`、`agents` 和许可证。只复制单个技能会缺少跨技能资料。
 
-Codex 可将选定技能复制到用户级 `.agents/skills` 或工程级 `.agents/skills`。以下在本仓库根目录执行，以安装 `stm32-configure` 为例；已有同名目录时先比较和处理旧版本。
+Codex 可以安装到用户级或工程级 `.agents/skills`。以下在本仓库根目录执行，先检查所有同名冲突，再复制完整包：
 
 PowerShell：
 
 ```powershell
 $skillsDir = Join-Path $HOME '.agents/skills'
+$sourceSkills = @(Get-ChildItem -LiteralPath './skills' -Directory |
+    Where-Object { $_.Name -like 'stm32-*' })
+if ($sourceSkills.Count -ne 7) { throw '来源不完整，应包含七个 STM32 技能。' }
+$conflicts = @($sourceSkills | Where-Object {
+    Test-Path -LiteralPath (Join-Path $skillsDir $_.Name)
+})
+if ($conflicts.Count) { throw '存在同名技能，请比较并处理旧版本后整包安装。' }
 New-Item -ItemType Directory -Path $skillsDir -Force | Out-Null
-$skillTarget = Join-Path $skillsDir 'stm32-configure'
-if (Test-Path -LiteralPath $skillTarget) { throw '同名技能已存在，请先处理旧版本。' }
-Copy-Item -LiteralPath './skills/stm32-configure' -Destination $skillsDir -Recurse
+foreach ($sourceSkill in $sourceSkills) {
+    Copy-Item -LiteralPath $sourceSkill.FullName -Destination $skillsDir -Recurse -ErrorAction Stop
+}
 ```
 
 Linux/macOS shell：
 
 ```bash
-mkdir -p "$HOME/.agents/skills"
-if [ -e "$HOME/.agents/skills/stm32-configure" ]; then
-  printf '%s\n' '同名技能已存在，请先处理旧版本。' >&2
-else
-  cp -R ./skills/stm32-configure "$HOME/.agents/skills/"
-fi
+(
+  set -eu
+  skill_names='stm32-env stm32-project stm32-configure stm32-firmware stm32-build stm32-flash stm32-debug'
+  skills_dir="$HOME/.agents/skills"
+  for name in $skill_names; do
+    if [ ! -f "./skills/$name/SKILL.md" ] || [ -e "$skills_dir/$name" ] || [ -L "$skills_dir/$name" ]; then
+      printf '%s\n' "来源缺失或目标存在：$name，请先处理后整包安装。" >&2
+      exit 1
+    fi
+  done
+  mkdir -p "$skills_dir"
+  for name in $skill_names; do
+    cp -R "./skills/$name" "$skills_dir/"
+  done
+)
 ```
 
-安装其他技能时替换目录名。工程级安装将目标改为目标工程的 `.agents/skills`。客户端未显示变化时重新加载或重启客户端。
+工程级安装将目标改为目标工程的 `.agents/skills`。其他兼容客户端按其发现规则导入完整七目录，并保留包内文件访问能力。重新加载客户端，确认七个技能均可见；升级也按完整包处理，避免混用不同版本的共享资料。
 
 ## 安装方式二：Codex 插件
 

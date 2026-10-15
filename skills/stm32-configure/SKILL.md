@@ -21,3 +21,9 @@ description: 配置 STM32 的引脚、时钟、外设、DMA、中断及生成器
 - 缺少板卡条件时说明待验证的接线、时钟源或信号，继续完成可进行的配置与构建。
 
 任务逻辑、驱动封装和 FreeRTOS 任务设计属于固件开发；本技能负责它们所需的硬件与生成器设置。
+
+## 与其他技能协作
+
+- 目标、SDK 或生成器未识别时读取[工程识别](../stm32-project/references/identify-and-maintain.md)；只有确需创建基础工程时进入[工程管理](../stm32-project/SKILL.md)。
+- 无法定位或启动生成器时读取[工具定位](../stm32-env/references/tool-location.md)，传统 CubeMX 继续读取[脚本入口](../stm32-env/references/cubemx-runtime.md)。
+- 配置需配套应用代码时继续[固件](../stm32-firmware/SKILL.md)；生成后按[构建](../stm32-build/SKILL.md)验证，不在本技能重复维护构建方法。

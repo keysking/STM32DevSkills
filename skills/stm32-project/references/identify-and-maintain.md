@@ -12,6 +12,20 @@
 
 使用 `rg --files` 和定向文本搜索，先读入口、初始化及构建目标。工具链、生成器和 HAL 代际不是一一对应关系。配置、源码与构建声明矛盾时查清真实目标，不任意选取一份。
 
+在用户指定的工程根目录运行以下查询，先找入口文件，避免从 SDK 全文搜索开始：
+
+```text
+rg --files -g '*.ioc' -g '*.ioc2' -g 'CMakeLists.txt' -g '*Presets.json' -g '*toolchain*.cmake' -g 'Makefile' -g '*.uvprojx' -g '*.ewp' -g 'FreeRTOSConfig.h' -g '!build/**'
+rg -n 'MxCube.Version|MxDb.Version|Mcu.Name|Mcu.CPN|FirmwarePackage|ToolChain' -g '*.ioc' .
+rg -n 'CMAKE_TOOLCHAIN_FILE|CMAKE_C_COMPILER|CPU|STM32|target_link_libraries|target_sources' -g 'CMakeLists.txt' -g '*.cmake' -g '*Presets.json' .
+```
+
+再在已选子工程的应用与初始化目录定向搜索 `main`、`SystemClock_Config` / `mx_rcc_init`、`vTaskStartScheduler`、`osKernelStart`、`xTaskCreate`、`osThreadCreate` / `osThreadNew`，并查看实际 include 与编译宏。不要因 SDK 内带 FreeRTOS 示例就认定当前应用使用 RTOS。
+
+如果 rg 不可用，PowerShell 用 `Get-ChildItem -LiteralPath <工程目录> -Recurse -File` 筛选上述文件名，POSIX 用 `find "<工程目录>" -type f` 筛选；只扫描目标工程范围。文件被忽略时对已知目录使用 rg 的 `--hidden` 或 `--no-ignore`，不无界扩大搜索。
+
+已有构建目录还应检查 `CMakeCache.txt`、`compile_commands.json`、map 和实际 ELF；它们用于确认构建归属，不能独立证明最新源码已编译。源码与历史产物矛盾时重新确定构建入口。识别完成应明确目标子工程、芯片、生成器/无生成器、SDK/驱动、构建配置、运行 API 及仍缺少的信息。
+
 ## 无生成器工程
 
 沿用现有 startup、SystemInit、向量表、链接布局和外设初始化。已有工程无需为了使用本技能而迁移到 CubeMX。检查新增源码的构建归属，以及 Debug/Release、安全域或多核目标是否各自需要修改。

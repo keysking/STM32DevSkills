@@ -19,3 +19,9 @@ description: 实现 STM32 应用功能、移植外设驱动或编写 FreeRTOS �
 代码接入实际初始化及调用链，构建产物包含修改；生成后用户代码仍可维护；异常路径和数据生命周期合理；清楚区分编译结果和实际功能验证。
 
 第一版 RTOS 范围仅为 FreeRTOS。遇到其他 RTOS 时明确该部分范围，保留原工程，不主动转换内核。
+
+## 与其他技能协作
+
+- 不清楚工程目标或 API 层时读取[工程识别](../stm32-project/references/identify-and-maintain.md)；缺少工具或 SDK 时读取[环境](../stm32-env/SKILL.md)。
+- 功能涉及引脚、时钟、DMA、中断或生成器选项时采用[配置](../stm32-configure/SKILL.md)，保持应用实现与生成设置一致。
+- 修改后采用[构建](../stm32-build/SKILL.md)。任务包含板端验证时采用[烧录](../stm32-flash/SKILL.md)，出现运行异常时采用[调试](../stm32-debug/SKILL.md)；不因读取技能就扩大任务范围。

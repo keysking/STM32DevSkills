@@ -2,7 +2,7 @@
 
 ## 发现顺序
 
-在目标工程目录运行，先查看工程的 `.settings/bundles.store.json`、`.settings/bundles-lock.store.json`、CMake presets 和 SDK 元数据，再查询工具：
+在目标工程目录运行，先查看工程的 `.settings/bundles.store.json`、`.settings/bundles-lock.store.json`、CMake presets 和 SDK 元数据。cube 不在 PATH 时先按[工具定位](tool-location.md)找到入口，再查询工具：
 
 ```text
 cube --version
@@ -17,6 +17,16 @@ cube ninja --version
 wrapper 与 Bundle 版本分开判断。`--list` 取决于已加载的 Bundle；安装了编译器 Bundle 不代表存在同名 wrapper 命令。解析结果可能包含环境信息，只保留与当前诊断相关的程序及工具链路径。
 
 工程版本约束优先于机器上恰好安装的最新版。父目录也可能影响 `.settings` 的发现；解析结果不符合预期时检查运行目录及父目录。锁文件可能含多个平台的解析结果，保留其他平台条目。
+
+## 从帮助找到可执行命令
+
+1. 用 `cube --list` 确认需要的命令是否注册；仅对存在的命令使用 `cube --json --resolve <命令>`，核对 Bundle 名、版本及调用入口。
+2. 逐层查询，例如 `cube mx --help` → `cube mx sw-config --help` → `cube mx sw-config list-parameters --help`。执行前核对 leaf 帮助的必需参数、合法选项和示例，不混用上层或相邻命令的 flag。
+3. 帮助只说明语法。实例名、软件工程、参数路径和合法值从目标工程的 list/view/get 等查询获得；保存与生成操作前，先做对应的只读查询确认上下文。
+4. 返回结构化结果时检查 `status`、`error`、`diagnostics` 和实际数据。只有帮助文本、空列表或进程退出 0，不能证明目标配置已找到。
+5. 查询为空先核对工程路径、软件工程、资源是否启用以及版本支持；得到合法参数后再修改，不能从另一芯片示例猜值。
+
+传统 CubeMX 使用自己的脚本帮助，不使用上述 wrapper 子命令语法，入口见[脚本会话](cubemx-runtime.md)。
 
 ## Bundle 与 Pack
 
@@ -38,7 +48,7 @@ cube pack list packs
 
 ## 编译器与辅助工具
 
-GCC Bundle 可通过 `PATH`、`TOOLCHAIN_ROOT`、`GCC_TOOLCHAIN_ROOT` 等导出工具。查询 Bundle 元数据并找到实际的 `arm-none-eabi-gcc`，确认 `--version` 与 `-dumpmachine`。CMake 使用的编译器最终以 cache 和实际编译命令为准。
+GCC Bundle 可能通过 `PATH`、`TOOLCHAIN_ROOT`、`GCC_TOOLCHAIN_ROOT` 等声明工具。按[编译器定位](tool-location.md)取得真实程序；CMake 使用的编译器最终以 cache 和实际编译命令为准。
 
 `cube --with <版本或范围> <命令>` 选择该命令所属 Bundle 的版本，不能用它凭空创建未注册的编译器命令。项目仍应通过实际工具链配置选择 GCC/Clang。
 

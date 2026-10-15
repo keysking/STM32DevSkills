@@ -27,7 +27,7 @@ arm-none-eabi-objcopy -O ihex "<固件.elf>" "<固件.hex>"
 arm-none-eabi-objcopy -O binary "<固件.elf>" "<固件.bin>"
 ```
 
-先定位真实程序；不要假定这些名称都已在 shell PATH 或注册为 cube 命令。`cube starm-readobj --help` 也可发现 ELF 检查能力。
+按[工具定位](../../stm32-env/references/tool-location.md)从所选工具链找到真实程序；不要假定这些名称都已在 shell PATH 或注册为 cube 命令。`cube starm-readobj --help` 也可发现 ELF 检查能力。
 
 text/data/bss 汇总不能完整说明各存储区占用：初始化 data 同时涉及装载与运行地址，heap/stack 可能只是链接预留。多 RAM/外部存储布局应结合 map 和链接脚本逐区解释。
 

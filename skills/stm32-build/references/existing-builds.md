@@ -4,6 +4,17 @@
 
 先阅读工程说明、CI 或构建脚本，确认真实工具和配置。文件扩展名用于定位入口，不保证工具已经安装或当前主机受其支持。
 
+UV4、IarBuild 或 make 不在 PATH 时采用[工具定位](../../stm32-env/references/tool-location.md)，通过安装记录和选定软件目录取得绝对路径，不直接要求用户手动编译。目标名称从工程文件取得；PowerShell 的 XML 查询示例：
+
+```powershell
+[xml]$keilProject = Get-Content -LiteralPath '<工程.uvprojx>' -Raw
+$keilProject.SelectNodes('//Target/TargetName') | ForEach-Object { $_.InnerText }
+[xml]$iarProject = Get-Content -LiteralPath '<工程.ewp>' -Raw
+$iarProject.SelectNodes('//configuration/name') | ForEach-Object { $_.InnerText }
+```
+
+只执行当前工程对应的一组。POSIX 或其他环境可用已安装 XML 工具查询相同节点，或通过 `rg -n -C 3 '<TargetName>|<configuration>|<name>' <工程文件>` 查看上下文；不能把所有 `name` 元素都当成构建配置。选择用户指定或与目标固件对应的一项，检查其芯片和输出位置。
+
 | 体系 | 操作方法 |
 | --- | --- |
 | Makefile | 检查默认目标、工具链前缀、依赖、输出目录和并行兼容性，使用工程原有 `make` 入口。 |
