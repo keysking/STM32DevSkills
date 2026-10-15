@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 烧录与运行"
+  short_description: "识别 STM32 目标并下载、校验和启动指定固件，处理连接与烧录问题"
+  default_prompt: "使用 $stm32-flash 向指定 STM32 目标下载固件，完成校验及所需启动检查。"

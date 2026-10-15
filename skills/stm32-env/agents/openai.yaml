@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 环境与依赖"
+  short_description: "发现和恢复 STM32 开发所需的 cube 工具链、软件包与主机环境"
+  default_prompt: "使用 $stm32-env 检查当前 STM32 工程的工具链、软件包和环境依赖。"

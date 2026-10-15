@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 硬件配置"
+  short_description: "调整 STM32 引脚、时钟、外设、DMA 和中断并检查保存及生成结果"
+  default_prompt: "使用 $stm32-configure 完成当前 STM32 工程所需的硬件配置并验证生成结果。"

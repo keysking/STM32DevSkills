@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 构建与检查"
+  short_description: "构建 STM32 固件、定位编译链接问题并检查实际产物与存储占用"
+  default_prompt: "使用 $stm32-build 构建当前 STM32 工程并检查错误、产物和资源使用。"

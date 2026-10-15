@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 调试与诊断"
+  short_description: "获取 STM32 运行证据，定位启动、异常、外设和 FreeRTOS 问题"
+  default_prompt: "使用 $stm32-debug 结合当前固件、配置及板端证据定位并修复运行问题。"

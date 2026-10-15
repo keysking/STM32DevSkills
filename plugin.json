@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "stm32-dev-skills",
+  "version": "0.1.0",
+  "description": "通过 cube 与原生工具完成通用 STM32 工程创建、配置、固件开发、构建、烧录和调试。",
+  "author": { "name": "STM32DevSkills contributors" },
+  "license": "MIT",
+  "keywords": ["stm32", "cube", "embedded", "freertos", "firmware"],
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "STM32DevSkills",
+        "shortDescription": "通过 cube 完成通用 STM32 开发",
+        "longDescription": "七个可组合技能，覆盖环境、工程、硬件配置、固件开发、构建、烧录和运行诊断。支持 CubeMX/CubeMX2，面向 Windows、Linux、macOS，覆盖裸机与 FreeRTOS。",
+        "developerName": "STM32DevSkills contributors",
+        "category": "Developer Tools",
+        "capabilities": ["Read", "Write"]
+      }
+    }
+  }
+}

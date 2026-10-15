@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 固件开发"
+  short_description: "实现 STM32 应用功能、移植驱动并维护裸机或 FreeRTOS 固件"
+  default_prompt: "使用 $stm32-firmware 在当前 STM32 工程实现指定功能并完成相关构建验证。"

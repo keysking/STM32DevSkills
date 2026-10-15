@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 工程管理"
+  short_description: "识别或创建 STM32 工程，选择匹配目标芯片的生成器和构建体系"
+  default_prompt: "使用 $stm32-project 识别当前工程结构，或为指定 STM32 目标建立工程。"
