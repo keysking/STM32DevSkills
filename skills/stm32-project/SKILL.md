@@ -15,7 +15,7 @@ description: 创建、接手或整理 STM32 工程，识别芯片、CubeMX/CubeM
 - 新建工程：确认芯片或板卡；未指定构建体系时使用 CMake + Ninja + GCC，未要求 RTOS 时使用裸机。
 - CubeMX：读取[传统 CubeMX 工程](references/cubemx.md)。
 - CubeMX2：读取[CubeMX2 工程](references/cubemx2.md)。
-- 无生成器：沿用现有启动、链接和构建组织；需要基础 CMake 工程时使用当前可用的 `ide-project-create`，见工程识别资料。
+- 无生成器：适用于已有无生成器工程或用户明确选择的方案，不能仅因本机缺少 CubeMX/CubeMX2 而采用。沿用现有启动、链接和构建组织；需要基础 CMake 工程时使用当前可用的 `ide-project-create`，见工程识别资料。
 - 已有工程：保留现有工具链、目录及用户代码，只有任务要求时才转换结构。
 
 创建基础工程后检查目标配置、源码和生成产物；任务包含功能开发时继续配置、编写和构建。后续配置调整与重新生成遵循所选生成器的流程，无需重建工程。
