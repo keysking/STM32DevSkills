@@ -6,10 +6,12 @@ cube 或 mx 不可用时先读取[工具定位](../../stm32-env/references/tool-
 
 ## 创建和软件工程
 
+未指定目录时，新建 `.ioc2` 默认放在当前任务目录，不额外创建工程名子目录。
+
 ```text
 cube mx --help
 cube mx project create-from-mcu --help
-cube mx project create-from-mcu --cpn "<准确CPN>" --project-location "<新目录>" --project-name "<工程名>"
+cube mx project create-from-mcu --cpn "<准确CPN>" --project-location "<工程目录>" --project-name "<工程名>"
 cube mx project get-sw-project-list --project-path "<工程.ioc2>"
 ```
 
@@ -19,7 +21,7 @@ cube mx project get-sw-project-list --project-path "<工程.ioc2>"
 
 ## 首次导出与后续维护
 
-创建完成后，按[MX2 配置、保存和导出](../../stm32-configure/references/cubemx2.md)选择完整软件目标、输出格式和新目录，首次导出后按[构建](../../stm32-build/SKILL.md)验证。参数查询、生命周期、已有工程重新生成和用户代码合并均集中维护在该配置资料中。
+创建完成后，按[MX2 配置、保存和导出](../../stm32-configure/references/cubemx2.md)选择完整软件目标、输出格式和输出目录，首次导出后按[构建](../../stm32-build/SKILL.md)验证。参数查询、生命周期、已有工程重新生成和用户代码合并均集中维护在该配置资料中。
 
 创建完成需要实际 `.ioc2` 路径、查询得到的软件工程和目标、成功生成的源码及任务要求的构建产物。创建返回错误、没有软件工程或设备依赖缺失时先解决对应问题，不继续盲目导出。
 

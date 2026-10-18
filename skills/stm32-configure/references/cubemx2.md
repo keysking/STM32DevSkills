@@ -77,11 +77,13 @@ cube mx ide-project generate --help
 
 构建目标形态为 `[projectName][.buildType][+targetType]`。列表返回以点开头的后缀时，结合已查询的软件工程名组成完整目标；不要只传后缀。缺少所需类型时查 `build-target add --help`，创建后重新列出目标。
 
-新建且未指定构建体系时采用 CMake + GCC；已有工程沿用原格式。以下只用于已确认支持这些选项的 CMake/GCC 导出；输出为新的空目录：
+首次生成未指定输出目录时，以 `.ioc2` 所在目录为工程根目录，不额外创建工程名子目录。用户指定目录时遵循指定位置，已有代码工程沿用现有布局。
+
+新建且未指定构建体系时采用 CMake + GCC；已有工程沿用原格式。以下只用于已确认支持这些选项的 CMake/GCC 导出：
 
 ```text
 cube mx ide-project set-target --project-path "<工程.ioc2>" --format CMake --target "<完整构建目标>"
-cube mx ide-project generate --project-path "<工程.ioc2>" --software-project "<软件工程名>" --build-target "<完整构建目标>" --destination "<新的输出目录>" --format CMake --source include-packs-from-local --diff keep_user
+cube mx ide-project generate --project-path "<工程.ioc2>" --software-project "<软件工程名>" --build-target "<完整构建目标>" --destination "<输出目录>" --format CMake --source include-packs-from-local --diff keep_user
 ```
 
 `include-packs-from-local` 用于所需包已安装的场景，其他 source 策略依据帮助及工程需求选择。`--diff keep_user` 是冲突处理策略；某些版本/导出策略下，`--force --diff keep_user` 仍会替换输出目录内手写的 `main.c`。
@@ -100,7 +102,7 @@ cube mx ide-project generate --project-path "<工程.ioc2>" --software-project "
 | 资源/参数不存在或为空 | 核对软件工程、组件启用与绑定、参数上游条件和工具版本；重新执行对应 list 查询。 |
 | 保存后恢复旧值 | 核对实际文件、GUI/CLI 会话和约束求解，保存后独立重载同一参数。 |
 | `No toolchain defined` | 重新列出构建目标，选择含软件工程名的完整目标；不能只设置格式。 |
-| 缺 `outputPath` / 输出目录已存在 | 显式传 `--destination` 选择新目录，再审查合并；不为绕过提示直接覆盖用户工程。 |
+| 缺 `outputPath` / 输出目录已存在 | 显式传 `--destination`；若目标目录不能安全直接生成，先导出到临时目录，再审查合并回工程根目录，不改变最终布局或直接强制覆盖。 |
 | 模型正确但生成/构建未生效 | 检查导出目录、文件差异、真正参与构建的源文件和目标。 |
 
 依据：[MX2 官方文档](https://dev.st.com/stm32cube-docs/stm32cubemx2)、当前 leaf 命令帮助及项目查询。
