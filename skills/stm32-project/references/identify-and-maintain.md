@@ -30,7 +30,7 @@ rg -n 'CMAKE_TOOLCHAIN_FILE|CMAKE_C_COMPILER|CPU|STM32|target_link_libraries|tar
 
 沿用现有 startup、SystemInit、向量表、链接布局和外设初始化。已有工程无需为了使用本技能而迁移到 CubeMX。检查新增源码的构建归属，以及 Debug/Release、安全域或多核目标是否各自需要修改。
 
-确实需要空 CMake 工程时，先查询当前 creator：
+仅在用户明确选择无生成器创建方案时使用以下空 CMake 工程入口。`cube ide-project-create` 不代替 CubeMX/CubeMX2 的配置与生成流程，也不因使用 CMake/GCC 就成为默认创建命令。先查询当前 creator：
 
 ```text
 cube ide-project-create --help

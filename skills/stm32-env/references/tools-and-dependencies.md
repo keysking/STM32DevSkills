@@ -65,6 +65,42 @@ cube pack list packs
 
 需要 CMSIS 扫描时先检查帮助。若扫描器未正确使用环境中的 Pack root，显式传入 `--cmsis-pack-root`。扫描输出为空或进程返回 0 均不能独立证明设备已找到。
 
+## 传统 CubeMX 固件包的命令行安装
+
+传统 CubeMX 的 MCU 固件包使用其自身的 `swmgr` 管理，不套用 `cube pack install`。先从 `.ioc` 的 `ProjectManager.FirmwarePackage` 或新工程所选目标确定系列和版本，按[工具与 SDK 定位](tool-location.md)检查实际仓库，优先复用满足要求的本地包，不为补齐依赖自动升级已有工程。
+
+按[交互会话入口](cubemx-runtime.md#固件包管理的交互入口)启动 CubeMX。以下命令在 `MX>` 会话内逐条执行，不是 shell 命令；尖括号内容需替换，先通过 `help` 和 `swmgr` 核对当前版本支持的语法。
+
+### 在线下载与安装
+
+```text
+help
+swmgr
+login <myST邮箱> <密码> <remember_me>
+swmgr refresh
+swmgr install stm32cube_<系列>_<版本> ask
+```
+
+`swmgr` 不带参数用于显示帮助，可能同时返回用法错误；这不代表安装失败。包标识采用当前软件包目录中的名称，例如官方示例 `stm32cube_f1_1.8.0`，不是安装后的目录名 `STM32Cube_FW_F1_V1.8.0`；示例版本不作为默认值。
+
+在线下载前确认命令行认证成功，不假定 GUI 登录状态能被该会话复用。`remember_me` 按当前帮助和用户选择填写。需要输入凭据时让用户在本机交互界面完成，不要求在聊天中提供密码，也不把实际凭据写入脚本、命令记录或日志；无法安全交接交互时，改由用户在 CubeMX 包管理器完成登录和安装。
+
+许可证参数按当前帮助选择；已核对的帮助列出 `deny|ask`，不能自行添加 `accept`、`yes` 等静默接受参数。`ask` 可能需要额外交互或弹窗，等待实际提示再处理，不预先发送固定回答，也不将拒绝许可证当作成功安装。需要用户操作时说明具体提示和待完成步骤。
+
+### 本地固件包安装
+
+当前帮助支持 `full_filepath` 时，可在同一会话中安装官方本地 ZIP：
+
+```text
+swmgr install "<固件ZIP绝对路径>" ask
+```
+
+若命令行安装或交互不可用，使用 `Help > Manage embedded software packages > From Local…` 导入。补丁包需要对应基础包，不能将补丁 ZIP 当作完整固件库。在线下载失败时检查认证、代理、证书和包版本，不切换生成器或手写库绕过。
+
+安装后检查完成信息、目标版本是否被 CubeMX 识别，以及仓库中驱动和必要组件是否完整；不能仅凭目录存在或进程退出码判定成功。确认工程仍使用预期版本后，返回原任务继续生成和构建，最后用 `exit` 结束本次会话。安装命令帮助可用不等于下载、许可证交互和安装全流程已经验证。
+
+依据：[CubeMX CLI](https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.1/en/docs/markup/CubeMX_CLI.html)、[命令行认证说明](https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.1/en/docs/markup/CubeMX_RelaseNotes/sections/3_1_command_line_authentication_required.html)、[固件包安装与补丁说明](https://dev.st.com/stm32cube-docs/stm32cubemx/6.18.1/en/docs/markup/CubeMX_UserManual/chapters/03_3_installing_and_running_stm32cubemx.html)及当前 `swmgr` 帮助。
+
 ## 编译器与辅助工具
 
 GCC Bundle 可能通过 `PATH`、`TOOLCHAIN_ROOT`、`GCC_TOOLCHAIN_ROOT` 等声明工具。按[编译器定位](tool-location.md)取得真实程序；CMake 使用的编译器最终以 cache 和实际编译命令为准。

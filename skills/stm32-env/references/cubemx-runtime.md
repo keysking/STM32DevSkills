@@ -53,6 +53,22 @@ script_path="<临时脚本绝对路径>"
 
 确认日志出现 CubeMX 的脚本帮助，并正常执行到 `exit`。仅打开 GUI、进程启动或退出码为 0，都不足以证明脚本会话已建立。
 
+## 固件包管理的交互入口
+
+缺少传统 MCU 固件包时，采用[命令行安装流程](tools-and-dependencies.md#传统-cubemx-固件包的命令行安装)。需要登录或处理安装提示时，用 `-i` 建立交互会话，而非假定 `-q` 脚本能完成所有交互。沿用上面已确认的程序路径和 JVM 参数：
+
+```powershell
+& $javaProgram @jvmArgs -jar $mxProgram -i
+```
+
+Linux/macOS 使用已确认的安装入口：
+
+```bash
+"$mx_program" -i
+```
+
+出现 `MX>` 后逐条发送命令并检查结果，结束时输入 `exit`。交互模式不保证登录或许可证提示都通过终端呈现；遇到 GUI 提示或无法交互时，按安装流程交接给用户，不盲目重复启动。
+
 ## 加载工程后的命令发现
 
 最小会话成功后，将脚本改为以下查询模板；此阶段不加入 `config save` 或 `project generate`：
