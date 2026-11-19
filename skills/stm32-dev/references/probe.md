@@ -1,6 +1,6 @@
 # 环境发现与 ST-Link 探测
 
-仅在用户和[当前工程](identify.md)都不足以确定目标时使用。入口自行完成工具发现，无需先安装系列技能。此处只识别目标，不建立工程、不下载 SDK，也不准备整套编译环境。
+仅在用户和[当前工程](identify.md)都不足以确定系列时使用。入口自行完成工具发现，无需先安装系列技能。ST-Link 结果只用于选择系列包，不用于擅自确定具体型号；系列已知而准确料号缺失时，转入工程或用户信息确认。此处不建立工程、不下载 SDK，也不准备整套编译环境。
 
 ## 找到 Cube
 
@@ -95,11 +95,20 @@ cube programmer -c port=SWD sn=<实际序列号> mode=HOTPLUG
 
 ## 解读结果
 
-读取连接日志的 `Device name`、`Device ID`、Flash 信息及错误信息。退出成功且返回明确系列时，记录证据并回到[入口](../SKILL.md)。
+读取连接日志的 `Device name`、`Device ID`、Flash 信息及错误信息。退出成功且返回明确系列时，记录原始候选组并回到[入口](../SKILL.md)选择包；准确型号是否已知单独记录。
 
-- `STM32F103…` 或 `STM32F1…` 可以选择 F1；`STM32C532…` 或 `STM32C5…` 可以选择 C5。只确定系列时不推断封装和完整订货型号。
-- 工具返回多个候选但都属于同一系列，可选择该系列包；具体型号仍标为未确定。
+- `STM32F103…` 或 `STM32F1…` 可以选择 F1；`STM32C532…` 或 `STM32C5…` 可以选择 C5。入口仅用这些字段确认系列，不据此声明准确型号。
+- 工具返回多个候选但都属于同一系列，可选择该系列包；未经用户或工程信息确认的具体型号仍标为未确定。不能取第一个候选，也不能结合 Flash 容量、修订号或 CPU 类型擅自补齐型号、封装和容量后缀。
 - 仅有未知的数字 Device ID 时，查当前 Programmer 随附的器件数据库或 ST 官方资料确认映射；不能凭记忆填入型号。无法唯一确定系列时询问用户。
 - 只有探针枚举成功、CPU 内核名或电压值，不能宣称已识别 MCU。
+
+下面是 STM32CubeProgrammer 2.23.0 经 ST-Link 热连接返回的两组实际字段，说明同一个器件 ID 可对应多个具体型号；不将这两项作为全部器件的识别表：
+
+| Device ID | Device name | NVM size | 可选系列包 | 仍不能确定 |
+| --- | --- | --- | --- | --- |
+| `0x410` | `STM32F101/F102/F103 Medium-density` | `64 KBytes` | F1 | 不能唯一确定 F103，更不能确定完整料号。 |
+| `0x44F` | `STM32C53x/542` | `256 KBytes` | C5 | 不能唯一确定 C531、C532 或 C542，更不能确定完整料号。 |
+
+达到选包所需的系列精度后即可安装并读取对应技能。**新建工程必须在创建目标相关配置或生成工程前确认准确芯片型号**；其他任务在后续确实需要时确认。用户未提供、工程中也没有准确料号时，按[型号确认规则](identify.md)询问用户并等待，不继续探测猜测具体型号。
 
 命令依据：[STM32CubeCLI](https://dev.st.com/stm32cube-docs/stm32cubecli/latest/en/docs/markup/STM32CubeCLI_Command_Reference.html)、[STM32CubeProgrammer CLI](https://dev.st.com/stm32cube-docs/prog/2.23.0/en/docs/markup/CubeProg_Command_Lines.html)。实际可用参数以本机帮助为准。
