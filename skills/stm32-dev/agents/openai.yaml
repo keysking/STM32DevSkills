@@ -1,0 +1,4 @@
+interface:
+  display_name: "STM32 开发入口"
+  short_description: "识别 STM32 芯片系列，在当前工程安装对应开发技能并继续用户任务"
+  default_prompt: "使用 $stm32-dev 识别当前目标芯片，在工程内安装或复用对应系列技能，继续完成我的 STM32 开发任务。"

@@ -1,0 +1,31 @@
+{
+  "name": "stm32-dev-skills",
+  "version": "0.1.0",
+  "description": "识别 STM32 芯片系列，安装对应的工程级技能包并继续原任务。",
+  "author": {
+    "name": "STM32DevSkills contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "stm32",
+    "stm32f1",
+    "stm32c5",
+    "cube",
+    "st-link",
+    "skills",
+    "embedded"
+  ],
+  "skills": "./skills/",
+  "requires_local_executor": true,
+  "interface": {
+    "displayName": "STM32DevSkills",
+    "shortDescription": "识别 STM32 系列并在当前工程安装对应开发技能，继续用户任务",
+    "longDescription": "全局 STM32 开发入口。先读取用户型号或当前工程，必要时通过 CubeProgrammer 和 ST-Link 识别；按语言选择仓库来源，在工程内安装或复用系列技能并继续开发。",
+    "developerName": "STM32DevSkills contributors",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ]
+  }
+}
